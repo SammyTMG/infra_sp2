@@ -1,90 +1,83 @@
+# API YaMDb
 
-api_final
+API для сервиса YamDb - хранение и сбор отзывов о фильмах, книгах или музыке.
 
-Описание:
-REST API для YaMDb
-Создан на основе библиотеки Django REST Framework (DRF)
+## Описание
 
-YaMDb - это платформа для сбора отзывов и оценок по различным категориям.
+Проект YaMDb собирает рецензии пользователей на произведения. Произведения делятся на категории: «Книги», «Фильмы», «Музыка». Зарегистрированные пользователи могут оставить к произведениям текстовые отзывы и поставить произведению оценку в диапазоне от одного до десяти, из пользовательских оценок формируется рейтинг произведения. 
 
-Технологии
-Python 3.7
+### Использовалось
 
-Django 3.2.15
+Python 3.7, Django, DRF, Simple-JWT, PostgreSQL, Docker, nginx, gunicorn.
 
-Запуск проекта:
-Клонировать репозиторий и перейти в него в командной строке:
+### Как запустить
 
-git clone git@github.com:kultmet/api_yamdb.git
+Клонируем репозиторий и переходим в него:
+```
+git clone git@github.com:SammyTMG/infra_sp2.git
+cd infra_sp2
 cd api_yamdb
-Cоздать и активировать виртуальное окружение:
+```
 
-python -m venv env
-source venv/Scripts/activate
+Создаем и активируем виртуальное окружение:
+```
+python3 -m venv venv
+source /venv/bin/activate (source /venv/Scripts/activate - для Windows)
 python -m pip install --upgrade pip
-Установить зависимости из файла requirements.txt:
+```
 
+Ставим зависимости из requirements.txt:
+```
 pip install -r requirements.txt
-Выполнить миграции:
+```
 
-python manage.py migrate
-Выполнить загрузку информации в базу данных:
+Переходим в папку с файлом docker-compose.yaml:
+```
+cd infra
+```
 
-python manage.py fill_database
-Запустить проект:
+Поднимаем контейнеры (infra_db_1, infra_web_1, infra_nginx_1):
+```
+docker-compose up -d --build
+```
 
-python manage.py runserver
-Когда вы запустите проект, по адресу http://127.0.0.1:8000/redoc/ будет доступна документация для API YaMDb. В документации описано, как работает API. Документация представлена в формате Redoc.
+Выполняем миграции:
+```
+docker-compose exec web python manage.py makemigrations users
+docker-compose exec web python manage.py makemigrations reviews
+docker-compose exec web python manage.py migrate
+```
 
-Примеры запросов
-Основные эндпоинты для аутентификации нового пользователя
-Для аутентификации применены JWT-токены.
+Создаем суперпользователя:
+```
+docker-compose exec web python manage.py createsuperuser
+```
 
-Создание JWT-токена:
+Србираем статику:
+```
+docker-compose exec web python manage.py collectstatic --no-input
+```
 
-http://127.0.0.1:8000/api/v1/jwt/create/
-Токен необходимо передавать в заголовке каждого запроса, в поле Authorization. Перед самим токеном должно стоять ключевое слово Bearer и пробел.
+Создаем дамп базы данных (нет в текущем репозитории):
+```
+docker-compose exec web python manage.py dumpdata > dumpPostrgeSQL.json
+```
 
-Основные эндпоинты API
-http://127.0.0.1:8000/api/v1/categories/
-http://127.0.0.1:8000/api/v1/genres/
-http://127.0.0.1:8000/api/v1/titles/
-пример POST запроса на (http://127.0.0.1:8000/api/v1/categories/):
+Останавливаем контейнеры:
+```
+docker-compose down -v
+```
 
-{
-  "name": "string",
-  "slug": "string"
-}
-Требования:
-asgiref==3.5.2
-atomicwrites==1.4.1
-attrs==22.1.0
-certifi==2022.9.24
-charset-normalizer==2.0.12
-colorama==0.4.5
-Django==2.2.16
-django-filter==21.1
-djangorestframework==3.12.4
-djangorestframework-simplejwt==5.2.1
-idna==3.4
-importlib-metadata==4.13.0
-iniconfig==1.1.1
-packaging==21.3
-pluggy==0.13.1
-py==1.11.0
-PyJWT==2.1.0
-pyparsing==3.0.9
-pytest==6.2.4
-pytest-django==4.4.0
-pytest-pythonpath==0.7.3
-pytz==2022.4
-requests==2.26.0
-sqlparse==0.4.3
-toml==0.10.2
-typing_extensions==4.3.0
-urllib3==1.26.12
-zipp==3.8.1
-=======
-# Нужно сделать
-api_yamdb
+Пример содержимого файла .env,  расположенного по пути infra/.env:
+```
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+```
 
+### Документация API YaMDb
+
+Документация доступна по эндпойнту: http://localhost/redoc/
