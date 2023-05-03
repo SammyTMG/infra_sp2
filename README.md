@@ -16,14 +16,12 @@ Python 3.7, Django, DRF, Simple-JWT, PostgreSQL, Docker, nginx, gunicorn.
 ```
 git clone git@github.com:SammyTMG/infra_sp2.git
 cd infra_sp2
-cd api_yamdb
 ```
 
 Создаем и активируем виртуальное окружение:
 ```
 python3 -m venv venv
 source /venv/bin/activate (source /venv/Scripts/activate - для Windows)
-python -m pip install --upgrade pip
 ```
 
 Ставим зависимости из requirements.txt:
@@ -77,6 +75,7 @@ POSTGRES_PASSWORD=postgres
 DB_HOST=db
 DB_PORT=5432
 ```
+
 
 ### Документация API YaMDb
 
