@@ -7,7 +7,8 @@ from .serializers import (
     TitleSerializerGet,
     ReviewSerializer,
     CommentSerializer,
-    TokenSerializer)
+    TokenSerializer,
+    MeSerializer)
 from .permissions import (ReadOnly, AdminOrModeratorOrAuthor, IsAdminOnly)
 from core.utils import (CreateListDestroyViewsSet,)
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,9 +27,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view, action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-
-from .serializers import (SignUpSerializer, User, TokenSerializer,
-                          UserSerializer, MeSerializer)
 
 
 @api_view(['POST'])
